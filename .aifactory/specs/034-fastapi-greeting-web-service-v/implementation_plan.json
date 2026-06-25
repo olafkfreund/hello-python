@@ -193,7 +193,7 @@
         {
           "id": "CICD",
           "description": "Set up CI/CD for FastAPI greeting web service v2\n\nImplement the CI/CD pipeline specified in `docs/plans/002-fastapi-greeting-web-service-v2-cicd-pipeline.md`.\n\nStages: lint \u2192 test \u2192 build \u2192 security scan \u2192 deploy.",
-          "status": "pending",
+          "status": "completed",
           "service": "cicd",
           "depends_on": [
             "C1",

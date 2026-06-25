@@ -55,3 +55,25 @@ Updated:
 - pyproject.toml — added pytest>=8.0.0, pytest-cov>=5.0.0 to dev deps; added coverage config
 
 Verification: 34 tests pass across unit / api / integration lanes (uv run pytest)
+  [x] TEST: Set up testing for FastAPI greeting web service v2
+
+Implement the testing strategy specified in `docs/plans/002-fastapi-greeting-web-service-v2-testing-strategy.md`.
+
+Lanes: unit / integration / e2e. Each acceptance criterion is mapped to a test approach in the spec. Hand test generation over to TFactory. (581d2e67)
+  [x] CICD: Set up CI/CD for FastAPI greeting web service v2
+
+Created:
+- .github/workflows/ci.yml                                       — GitHub Actions pipeline (lint → test → build → security-scan → deploy)
+- docs/plans/002-fastapi-greeting-web-service-v2-cicd-pipeline.md — pipeline design document
+
+Updated:
+- pyproject.toml — added ruff>=0.4.0 to dev deps (required for lint stage)
+
+Pipeline stages:
+  1. Lint         — ruff check + ruff format --check; fails fast on any violation
+  2. Test         — pytest full suite + coverage report; coverage XML uploaded as artefact; fail_under=80
+  3. Build        — Docker buildx multi-stage image; layer cache via GHA cache backend; image saved as tarball artefact
+  4. Security scan — Trivy vulnerability scan (CRITICAL/HIGH → fail); SARIF uploaded to GitHub Security tab
+  5. Deploy       — push image to GHCR; gated on green build + manual approval via "production" GitHub Environment; main branch only
+
+Verification: pytest 34 tests pass. ruff added to dev deps for use in CI and locally.
