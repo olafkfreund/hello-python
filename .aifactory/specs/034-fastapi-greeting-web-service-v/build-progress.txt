@@ -13,3 +13,6 @@ App is importable as `hello_python.web:app`.
   [x] C1: `GET /healthz` returns HTTP 200 with body `{"status": "ok"}`. (6de73415)
   [x] C2: `GET /greet/ada` returns HTTP 200 with body `{"message": "Hello, ada!"}`. (d09551c1)
   [x] C3: `GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob` → `{"message": "Hello, Bob!"}`). (already in C2 commit)
+  [x] C3: `GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob`…
+
+`GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob` → `{"message": "Hello, Bob!"}`). (fb653c78)
