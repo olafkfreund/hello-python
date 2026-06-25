@@ -35,3 +35,16 @@ Status: completed
 - Names of 64 chars or fewer continue to work as before
 - Verified: 65-char name → 422, 64-char name → 200, short names → 200
   [x] C4: The `{name}` path parameter is validated: names longer than 64 characters return HTTP 422. (8803b31)
+  [x] C4: The `{name}` path parameter is validated: names longer than 64 characters retur…
+
+The `{name}` path parameter is validated: names longer than 64 characters return HTTP 422 (input is length-bounded to prevent abuse). (89be7cdf)
+
+### C5 - Access control documentation
+Status: completed
+- Access control is explicitly out of scope for this service
+- Documented in hello_python/web.py module docstring:
+  "Access control note: all endpoints are public and read-only, hold no secrets,
+   and perform no writes — access control is explicitly out of scope for this service."
+- All endpoints (GET /healthz, GET /greet/{name}) are public and read-only
+- No authentication, no secrets stored, no write operations performed
+  [x] C5: Access control is explicitly out of scope — documented in the code.
