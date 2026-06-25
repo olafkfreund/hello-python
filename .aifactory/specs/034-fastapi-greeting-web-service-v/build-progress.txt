@@ -20,3 +20,13 @@ App is importable as `hello_python.web:app`.
 
 The `{name}` path parameter is validated: names longer than 64 characters return HTTP 422 (input is length-bounded to prevent abuse). (455388fb)
   [x] C5: Access control is explicitly out of scope: all endpoints are public and read-only, hold no secrets, and perform no writes — documented in the code. (9f3e06c)
+  [x] C5: Access control is explicitly out of scope: all endpoints are public and read-on…
+
+Access control is explicitly out of scope: all endpoints are public and read-only, hold no secrets, and perform no writes — documented in the code. (1aa70bf0)
+  [x] C6: The app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080.
+
+Verification:
+- `app = FastAPI(...)` in src/hello_python/web.py is importable as `hello_python.web:app`
+- `main()` calls `uvicorn.run("hello_python.web:app", host="0.0.0.0", port=8080, reload=False)`
+- `pyproject.toml` [project.scripts] entry `hello-python = "hello_python.web:main"` wires the CLI
+- Import verified: `uv run` confirmed `hello_python.web:app` is a valid FastAPI application object
