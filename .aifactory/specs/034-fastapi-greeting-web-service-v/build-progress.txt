@@ -38,3 +38,20 @@ The app object is importable as `hello_python.web:app` and starts under uvicorn 
 Created:
 - Dockerfile       — multi-stage build (builder + runtime); installs via uv into .venv; exposes port 8080; CMD runs uvicorn on 0.0.0.0:8080
 - .dockerignore    — excludes .venv, __pycache__, .git, .aifactory from build context
+  [x] C7: A `Dockerfile` exists that builds the service and runs it on port 8080. (e5ce974f)
+  [x] TEST: Set up testing for FastAPI greeting web service v2
+
+Created:
+- tests/__init__.py, tests/conftest.py       — shared session-scoped TestClient fixture
+- tests/unit/__init__.py                     — unit lane init
+- tests/unit/test_web.py                     — AC#5 (access-control docs), AC#6 (app import), AC#7 (Dockerfile)
+- tests/api/__init__.py                      — api lane init
+- tests/api/test_endpoints.py                — AC#1 (/healthz), AC#2 (/greet/ada), AC#3 (any valid name), AC#4 (>64 chars → 422)
+- tests/integration/__init__.py              — integration lane init
+- tests/integration/test_service.py          — full-stack ASGI lifecycle tests covering AC#1–AC#4
+- docs/plans/002-fastapi-greeting-web-service-v2-testing-strategy.md — testing strategy document
+
+Updated:
+- pyproject.toml — added pytest>=8.0.0, pytest-cov>=5.0.0 to dev deps; added coverage config
+
+Verification: 34 tests pass across unit / api / integration lanes (uv run pytest)
