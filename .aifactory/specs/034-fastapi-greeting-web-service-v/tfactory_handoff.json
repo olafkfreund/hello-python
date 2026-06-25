@@ -1,0 +1,6 @@
+{
+  "sent": false,
+  "reason": "http_error",
+  "status": 409,
+  "url": "http://tfactory.factory.svc.cluster.local:3103/api/specs/ingest"
+}

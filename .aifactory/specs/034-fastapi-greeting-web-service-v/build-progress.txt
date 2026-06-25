@@ -1,0 +1,12 @@
+## Build Progress
+
+### C1 — `GET /healthz` returns HTTP 200 with body `{"status": "ok"}`
+Status: completed
+
+Created:
+- pyproject.toml  — declares fastapi + uvicorn[standard] runtime dependencies
+- src/hello_python/__init__.py — package init with access-control note
+- src/hello_python/web.py     — FastAPI app with /healthz endpoint
+
+The /healthz handler returns `{"status": "ok"}` with HTTP 200.
+App is importable as `hello_python.web:app`.
