@@ -15,7 +15,10 @@ app = FastAPI(title="hello-python", version="0.1.0")
 
 @app.get("/healthz")
 def healthz() -> dict[str, str]:
-    """Health check endpoint. Returns HTTP 200 with status ok."""
+    """Health check endpoint. Returns HTTP 200 with status ok.
+
+    Public endpoint — no authentication required, no secrets exposed, read-only.
+    """
     return {"status": "ok"}
 
 
@@ -27,6 +30,8 @@ def greet(
 
     The name parameter is length-bounded to 64 characters to prevent abuse.
     Names exceeding this limit return HTTP 422.
+
+    Public endpoint — no authentication required, no secrets exposed, read-only.
     """
     return {"message": f"Hello, {name}!"}
 
