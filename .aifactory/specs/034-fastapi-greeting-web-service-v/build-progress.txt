@@ -1,0 +1,8 @@
+## Build Progress
+
+### C1 - GET /healthz endpoint
+Status: completed
+- Created hello_python/ package with __init__.py
+- Created hello_python/web.py with FastAPI app and /healthz endpoint
+- Created pyproject.toml with fastapi[standard] and uvicorn[standard] dependencies
+- App is importable as hello_python.web:app

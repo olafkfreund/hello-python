@@ -1,0 +1,10 @@
+{
+  "title": "FastAPI greeting web service v2",
+  "description": "`GET /healthz` returns HTTP 200 with body `{\"status\": \"ok\"}`.; `GET /greet/ada` returns HTTP 200 with body `{\"message\": \"Hello, ada!\"}`.; `GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob` \u2192 `{\"message\": \"Hello, Bob!\"}`).; The `{name}` path parameter is validated: names longer than 64 characters return HTTP 422 (input is length-bounded to prevent abuse).; Access control is explicitly out of scope: all endpoints are public and read-only, hold no secrets, and perform n",
+  "created_at": "2026-06-25T14:37:14.903822",
+  "provenance": {
+    "approved_by": "pfactory",
+    "approval_timestamp": "2026-06-25T14:37:14.885312+00:00",
+    "trusted_plan": true
+  }
+}

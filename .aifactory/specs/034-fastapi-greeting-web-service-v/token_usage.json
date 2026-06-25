@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "turns": 1,
+  "totalInputTokens": 527664,
+  "outputTokens": 3870,
+  "totalTokens": 531534,
+  "totalCostUsd": 0.312941,
+  "categories": {
+    "system_instructions": {
+      "tokens": 527645,
+      "costUsd": 0.310651
+    },
+    "user_messages": {
+      "tokens": 1,
+      "costUsd": 1e-06
+    },
+    "coordination_context": {
+      "tokens": 0,
+      "costUsd": 0.0
+    },
+    "tool_outputs": {
+      "tokens": 18,
+      "costUsd": 1.1e-05
+    },
+    "thinking_and_output": {
+      "tokens": 3870,
+      "costUsd": 0.002278
+    }
+  },
+  "model": "claude-sonnet-4-6",
+  "maxTokens": 200000,
+  "updatedAt": "2026-06-25T15:55:08.358182+00:00",
+  "workers": {
+    "C1": {
+      "worker_id": "C1",
+      "phase": "coding",
+      "subtask_id": "C1",
+      "provider": "claude",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 527664,
+      "output_tokens": 3870,
+      "total_tokens": 531534,
+      "cost_usd": 0.312941,
+      "duration_ms": 0
+    }
+  }
+}
