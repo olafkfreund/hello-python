@@ -60,3 +60,14 @@ Status: completed
 - pyproject.toml exposes `hello-python = "hello_python.web:main"` as a CLI entry point
 - No changes needed — C1-C5 already satisfied this requirement
   [x] C6: The app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080.
+  [x] C6: The app object is importable as `hello_python.web:app` and starts under uvicorn…
+
+The app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080. (b5ac9424)
+
+### C7 - Dockerfile builds the service and runs it on port 8080
+Status: completed
+- Created Dockerfile using python:3.11-slim base image with uv for dependency management
+- Two-layer install: deps first (for layer caching), then project source code
+- EXPOSE 8080 declared; CMD uses hello-python entry point (uvicorn on 0.0.0.0:8080)
+- Added .dockerignore to exclude .venv, .git, tests, and build artifacts
+  [x] C7: A `Dockerfile` exists that builds the service and runs it on port 8080. (9eb676a)
