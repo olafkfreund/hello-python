@@ -30,3 +30,11 @@ Verification:
 - `main()` calls `uvicorn.run("hello_python.web:app", host="0.0.0.0", port=8080, reload=False)`
 - `pyproject.toml` [project.scripts] entry `hello-python = "hello_python.web:main"` wires the CLI
 - Import verified: `uv run` confirmed `hello_python.web:app` is a valid FastAPI application object
+  [x] C6: The app object is importable as `hello_python.web:app` and starts under uvicorn…
+
+The app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080. (906bf79c)
+  [x] C7: A `Dockerfile` exists that builds the service and runs it on port 8080.
+
+Created:
+- Dockerfile       — multi-stage build (builder + runtime); installs via uv into .venv; exposes port 8080; CMD runs uvicorn on 0.0.0.0:8080
+- .dockerignore    — excludes .venv, __pycache__, .git, .aifactory from build context

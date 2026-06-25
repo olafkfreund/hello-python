@@ -135,7 +135,7 @@
         {
           "id": "C7",
           "description": "A `Dockerfile` exists that builds the service and runs it on port 8080.",
-          "status": "pending",
+          "status": "completed",
           "service": null,
           "depends_on": [],
           "files_to_create": [],
