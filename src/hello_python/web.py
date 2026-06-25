@@ -5,7 +5,9 @@ Access control note: all endpoints are public and read-only, hold no secrets,
 and perform no writes. Authentication / authorisation is explicitly out of scope.
 """
 
-from fastapi import FastAPI
+from typing import Annotated
+
+from fastapi import FastAPI, Path
 
 # Access control: no auth middleware — all endpoints intentionally public.
 app = FastAPI(title="hello-python", version="0.1.0")
@@ -18,7 +20,7 @@ async def healthz() -> dict[str, str]:
 
 
 @app.get("/greet/{name}")
-async def greet(name: str) -> dict[str, str]:
+async def greet(name: Annotated[str, Path(max_length=64)]) -> dict[str, str]:
     """Return a personalised greeting for *name*.
 
     Access control: public, read-only, no secrets, no writes.
