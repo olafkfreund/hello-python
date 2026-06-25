@@ -9,7 +9,6 @@ import importlib
 import inspect
 import pathlib
 
-
 # ---------------------------------------------------------------------------
 # AC#6 – uvicorn startup configuration
 # ---------------------------------------------------------------------------
@@ -18,7 +17,9 @@ import pathlib
 def test_main_function_exists() -> None:
     """hello_python.web must expose a 'main' entry-point function (AC#6)."""
     module = importlib.import_module("hello_python.web")
-    assert callable(getattr(module, "main", None)), "hello_python.web must expose a callable 'main'"
+    assert callable(getattr(module, "main", None)), (
+        "hello_python.web must expose a callable 'main'"
+    )
 
 
 def test_main_uses_port_8080() -> None:
@@ -69,6 +70,6 @@ def test_dockerfile_expose_directive() -> None:
     """The Dockerfile must contain an EXPOSE instruction (AC#7)."""
     dockerfile = _repo_root() / "Dockerfile"
     content = dockerfile.read_text()
-    assert any(
-        line.strip().startswith("EXPOSE") for line in content.splitlines()
-    ), "Dockerfile must contain an EXPOSE directive"
+    assert any(line.strip().startswith("EXPOSE") for line in content.splitlines()), (
+        "Dockerfile must contain an EXPOSE directive"
+    )

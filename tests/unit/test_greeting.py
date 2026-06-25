@@ -9,9 +9,9 @@ import pytest
 @pytest.mark.parametrize(
     "name,expected_message",
     [
-        ("ada", "Hello, ada!"),          # AC#2 – canonical example
-        ("Bob", "Hello, Bob!"),           # AC#3 – arbitrary name
-        ("Alice", "Hello, Alice!"),       # AC#3 – arbitrary name
+        ("ada", "Hello, ada!"),  # AC#2 – canonical example
+        ("Bob", "Hello, Bob!"),  # AC#3 – arbitrary name
+        ("Alice", "Hello, Alice!"),  # AC#3 – arbitrary name
         ("Z" * 64, f"Hello, {'Z' * 64}!"),  # AC#4 – exactly 64 chars is valid
     ],
 )

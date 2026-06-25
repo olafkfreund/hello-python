@@ -12,9 +12,7 @@ Maps:
 import importlib
 
 import pytest
-
 from fastapi.testclient import TestClient
-
 
 # ---------------------------------------------------------------------------
 # AC#1 – health check
@@ -64,7 +62,9 @@ def test_greet_ada_body(client: TestClient) -> None:
         ("X" * 64, f"Hello, {'X' * 64}!"),  # boundary: exactly 64 chars
     ],
 )
-def test_greet_arbitrary_name(client: TestClient, name: str, expected_message: str) -> None:
+def test_greet_arbitrary_name(
+    client: TestClient, name: str, expected_message: str
+) -> None:
     """GET /greet/{name} greets any valid name correctly (AC#3)."""
     response = client.get(f"/greet/{name}")
     assert response.status_code == 200
@@ -100,9 +100,15 @@ def test_access_control_documented_in_module() -> None:
     import hello_python.web as web_module  # noqa: PLC0415
 
     doc = web_module.__doc__ or ""
-    assert "public" in doc.lower(), "Module docstring must mention that endpoints are public"
-    assert "read-only" in doc.lower(), "Module docstring must mention that endpoints are read-only"
-    assert "access control" in doc.lower(), "Module docstring must address access control"
+    assert "public" in doc.lower(), (
+        "Module docstring must mention that endpoints are public"
+    )
+    assert "read-only" in doc.lower(), (
+        "Module docstring must mention that endpoints are read-only"
+    )
+    assert "access control" in doc.lower(), (
+        "Module docstring must address access control"
+    )
 
 
 # ---------------------------------------------------------------------------

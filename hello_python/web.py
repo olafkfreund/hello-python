@@ -24,7 +24,10 @@ def healthz() -> dict[str, str]:
 
 @app.get("/greet/{name}")
 def greet(
-    name: Annotated[str, Path(max_length=64, description="Name to greet (max 64 characters)")],
+    name: Annotated[
+        str,
+        Path(max_length=64, description="Name to greet (max 64 characters)"),
+    ],
 ) -> dict[str, str]:
     """Greet endpoint. Returns HTTP 200 with a personalised greeting message.
 
