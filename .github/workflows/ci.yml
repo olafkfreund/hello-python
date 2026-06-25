@@ -1,0 +1,264 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+env:
+  IMAGE_NAME: hello-python
+
+jobs:
+  # ──────────────────────────────────────────────
+  # Stage 1: Lint
+  # ──────────────────────────────────────────────
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Install dev dependencies
+        run: uv sync --frozen --group dev
+
+      - name: Ruff — check style and errors
+        run: uv run ruff check .
+
+      - name: Ruff — check formatting
+        run: uv run ruff format --check .
+
+  # ──────────────────────────────────────────────
+  # Stage 2: Test
+  # ──────────────────────────────────────────────
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Install dev dependencies
+        run: uv sync --frozen --group dev
+
+      - name: Run full test suite with coverage
+        run: |
+          uv run pytest \
+            --cov=hello_python \
+            --cov-report=xml:coverage.xml \
+            --cov-report=term-missing \
+            --junitxml=junit.xml \
+            -q
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+          retention-days: 30
+
+      - name: Upload JUnit test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-results
+          path: junit.xml
+          retention-days: 30
+
+      - name: Publish test summary
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Pytest Results
+          path: junit.xml
+          reporter: java-junit
+          fail-on-error: true
+
+  # ──────────────────────────────────────────────
+  # Stage 3: Build Docker image
+  # ──────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: test
+    outputs:
+      image-tag: ${{ steps.meta.outputs.short-sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Derive short SHA tag
+        id: meta
+        run: echo "short-sha=${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t "${{ env.IMAGE_NAME }}:ci" \
+            -t "${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.short-sha }}" \
+            .
+
+      - name: Export image tarball
+        run: docker save "${{ env.IMAGE_NAME }}:ci" -o image.tar
+
+      - name: Upload image tarball
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: image.tar
+          retention-days: 1
+
+  # ──────────────────────────────────────────────
+  # Stage 4: Security scan
+  # ──────────────────────────────────────────────
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Audit Python dependencies (pip-audit)
+        run: uvx pip-audit
+
+      - name: Download image tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Load Docker image
+        run: docker load -i image.tar
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "${{ env.IMAGE_NAME }}:ci"
+          format: "table"
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: "HIGH,CRITICAL"
+
+  # ──────────────────────────────────────────────
+  # Stage 5a: Deploy — Staging (automatic)
+  # ──────────────────────────────────────────────
+  deploy-staging:
+    name: Deploy (staging)
+    runs-on: ubuntu-latest
+    needs: [build, security-scan]
+    # Only deploy on pushes to main/master, not on PRs
+    if: github.event_name == 'push'
+    environment:
+      name: staging
+      url: https://staging.example.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download image tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Load Docker image
+        run: docker load -i image.tar
+
+      - name: Log in to container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.REGISTRY_URL }}
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Push image to registry
+        run: |
+          SHORT_SHA="${GITHUB_SHA::8}"
+          docker tag "${{ env.IMAGE_NAME }}:ci" "${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${SHORT_SHA}"
+          docker tag "${{ env.IMAGE_NAME }}:ci" "${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:staging-latest"
+          docker push "${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${SHORT_SHA}"
+          docker push "${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:staging-latest"
+
+      - name: Deploy to staging
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG_STAGING }}
+        run: |
+          SHORT_SHA="${GITHUB_SHA::8}"
+          kubectl set image deployment/hello-python \
+            hello-python="${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${SHORT_SHA}" \
+            --namespace staging
+          kubectl rollout status deployment/hello-python --namespace staging --timeout=120s
+
+  # ──────────────────────────────────────────────
+  # Stage 5b: Deploy — Production (manual approval)
+  # ──────────────────────────────────────────────
+  deploy-production:
+    name: Deploy (production)
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.event_name == 'push'
+    environment:
+      name: production
+      url: https://production.example.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download image tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Load Docker image
+        run: docker load -i image.tar
+
+      - name: Log in to container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.REGISTRY_URL }}
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Push image to registry
+        run: |
+          SHORT_SHA="${GITHUB_SHA::8}"
+          docker tag "${{ env.IMAGE_NAME }}:ci" "${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${SHORT_SHA}"
+          docker tag "${{ env.IMAGE_NAME }}:ci" "${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:latest"
+          docker push "${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${SHORT_SHA}"
+          docker push "${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:latest"
+
+      - name: Deploy to production
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG_PRODUCTION }}
+        run: |
+          SHORT_SHA="${GITHUB_SHA::8}"
+          kubectl set image deployment/hello-python \
+            hello-python="${{ vars.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${SHORT_SHA}" \
+            --namespace production
+          kubectl rollout status deployment/hello-python --namespace production --timeout=120s

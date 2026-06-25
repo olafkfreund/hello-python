@@ -1,0 +1,395 @@
+{
+  "contract_version": "2",
+  "feature": "FastAPI greeting web service v2",
+  "workflow_type": "feature",
+  "services_involved": [
+    "cicd",
+    "testing"
+  ],
+  "final_acceptance": [
+    "`GET /healthz` returns HTTP 200 with body `{\"status\": \"ok\"}`.",
+    "`GET /greet/ada` returns HTTP 200 with body `{\"message\": \"Hello, ada!\"}`.",
+    "`GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob` \u2192 `{\"message\": \"Hello, Bob!\"}`).",
+    "The `{name}` path parameter is validated: names longer than 64 characters return HTTP 422 (input is length-bounded to prevent abuse).",
+    "Access control is explicitly out of scope: all endpoints are public and read-only, hold no secrets, and perform no writes \u2014 documented in the code.",
+    "The app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080.",
+    "A `Dockerfile` exists that builds the service and runs it on port 8080."
+  ],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Implementation",
+      "type": "implementation",
+      "depends_on": [],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "C1",
+          "description": "`GET /healthz` returns HTTP 200 with body `{\"status\": \"ok\"}`.",
+          "status": "completed",
+          "service": null,
+          "depends_on": [],
+          "files_to_create": [],
+          "files_to_modify": [],
+          "patterns_from": [],
+          "complexity": "standard",
+          "acceptance_criteria": [
+            "`GET /healthz` returns HTTP 200 with body `{\"status\": \"ok\"}`.",
+            "The service declares its runtime dependencies in a manifest (requirements.txt / package.json / go.mod / pyproject.toml)."
+          ],
+          "verification": {
+            "type": "manual",
+            "scenario": "`GET /healthz` returns HTTP 200 with body `{\"status\": \"ok\"}`.; The service declares its runtime dependencies in a manifest (requirements.txt / package.json / go.mod / pyproject.toml)."
+          }
+        },
+        {
+          "id": "C2",
+          "description": "`GET /greet/ada` returns HTTP 200 with body `{\"message\": \"Hello, ada!\"}`.",
+          "status": "completed",
+          "service": null,
+          "depends_on": [],
+          "files_to_create": [],
+          "files_to_modify": [],
+          "patterns_from": [],
+          "complexity": "standard",
+          "acceptance_criteria": [
+            "`GET /greet/ada` returns HTTP 200 with body `{\"message\": \"Hello, ada!\"}`."
+          ],
+          "verification": {
+            "type": "manual",
+            "scenario": "`GET /greet/ada` returns HTTP 200 with body `{\"message\": \"Hello, ada!\"}`."
+          }
+        },
+        {
+          "id": "C3",
+          "description": "`GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob`\u2026\n\n`GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob` \u2192 `{\"message\": \"Hello, Bob!\"}`).",
+          "status": "completed",
+          "service": null,
+          "depends_on": [],
+          "files_to_create": [],
+          "files_to_modify": [],
+          "patterns_from": [],
+          "complexity": "standard",
+          "acceptance_criteria": [
+            "`GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob` \u2192 `{\"message\": \"Hello, Bob!\"}`)."
+          ],
+          "verification": {
+            "type": "manual",
+            "scenario": "`GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob` \u2192 `{\"message\": \"Hello, Bob!\"}`)."
+          }
+        },
+        {
+          "id": "C4",
+          "description": "The `{name}` path parameter is validated: names longer than 64 characters retur\u2026\n\nThe `{name}` path parameter is validated: names longer than 64 characters return HTTP 422 (input is length-bounded to prevent abuse).",
+          "status": "completed",
+          "service": null,
+          "depends_on": [],
+          "files_to_create": [],
+          "files_to_modify": [],
+          "patterns_from": [],
+          "complexity": "standard",
+          "acceptance_criteria": [
+            "The `{name}` path parameter is validated: names longer than 64 characters return HTTP 422 (input is length-bounded to prevent abuse)."
+          ],
+          "verification": {
+            "type": "manual",
+            "scenario": "The `{name}` path parameter is validated: names longer than 64 characters return HTTP 422 (input is length-bounded to prevent abuse)."
+          }
+        },
+        {
+          "id": "C5",
+          "description": "Access control is explicitly out of scope: all endpoints are public and read-on\u2026\n\nAccess control is explicitly out of scope: all endpoints are public and read-only, hold no secrets, and perform no writes \u2014 documented in the code.",
+          "status": "completed",
+          "service": null,
+          "depends_on": [],
+          "files_to_create": [],
+          "files_to_modify": [],
+          "patterns_from": [],
+          "complexity": "standard",
+          "acceptance_criteria": [
+            "Access control is explicitly out of scope: all endpoints are public and read-only, hold no secrets, and perform no writes \u2014 documented in the code."
+          ],
+          "verification": {
+            "type": "manual",
+            "scenario": "Access control is explicitly out of scope: all endpoints are public and read-only, hold no secrets, and perform no writes \u2014 documented in the code."
+          }
+        },
+        {
+          "id": "C6",
+          "description": "The app object is importable as `hello_python.web:app` and starts under uvicorn\u2026\n\nThe app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080.",
+          "status": "completed",
+          "service": null,
+          "depends_on": [],
+          "files_to_create": [],
+          "files_to_modify": [],
+          "patterns_from": [],
+          "complexity": "standard",
+          "acceptance_criteria": [
+            "The app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080."
+          ],
+          "verification": {
+            "type": "manual",
+            "scenario": "The app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080."
+          }
+        },
+        {
+          "id": "C7",
+          "description": "A `Dockerfile` exists that builds the service and runs it on port 8080.",
+          "status": "completed",
+          "service": null,
+          "depends_on": [],
+          "files_to_create": [],
+          "files_to_modify": [],
+          "patterns_from": [],
+          "complexity": "standard",
+          "acceptance_criteria": [
+            "A `Dockerfile` exists that builds the service and runs it on port 8080."
+          ],
+          "verification": {
+            "type": "manual",
+            "scenario": "A `Dockerfile` exists that builds the service and runs it on port 8080."
+          }
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Testing",
+      "type": "integration",
+      "depends_on": [
+        1
+      ],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "TEST",
+          "description": "Set up testing for FastAPI greeting web service v2\n\nImplement the testing strategy specified in `docs/plans/002-fastapi-greeting-web-service-v2-testing-strategy.md`.\n\nLanes: unit / integration / e2e. Each acceptance criterion is mapped to a test approach in the spec. Hand test generation over to TFactory.",
+          "status": "completed",
+          "service": "testing",
+          "depends_on": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "files_to_create": [],
+          "files_to_modify": [],
+          "patterns_from": [],
+          "complexity": "standard",
+          "acceptance_criteria": [
+            "Unit, integration, and e2e lanes are scaffolded and runnable.",
+            "Every plan acceptance criterion maps to at least one passing test.",
+            "Coverage targets per lane are met or explicitly waived.",
+            "Tests run in CI and gate the build."
+          ],
+          "verification": {
+            "type": "command",
+            "run": "pytest"
+          }
+        },
+        {
+          "id": "CICD",
+          "description": "Set up CI/CD for FastAPI greeting web service v2\n\nImplement the CI/CD pipeline specified in `docs/plans/002-fastapi-greeting-web-service-v2-cicd-pipeline.md`.\n\nStages: lint \u2192 test \u2192 build \u2192 security scan \u2192 deploy.",
+          "status": "completed",
+          "service": "cicd",
+          "depends_on": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "files_to_create": [],
+          "files_to_modify": [],
+          "patterns_from": [],
+          "complexity": "standard",
+          "acceptance_criteria": [
+            "Lint, test, build, and security-scan stages run on every push and PR.",
+            "The test stage runs the full suite and publishes a coverage report.",
+            "Deploy stages are gated on a green build and require manual approval."
+          ],
+          "verification": {
+            "type": "command",
+            "run": "ruff check . && pytest"
+          },
+          "notes": "Created .github/workflows/ci.yml with 5 stages: lint (ruff), test (pytest --cov, publishes coverage.xml + junit.xml artefacts), build (docker build + image tarball), security-scan (pip-audit + Trivy HIGH/CRITICAL), deploy-staging (automatic on push), deploy-production (manual approval via GitHub environment protection). Also created docs/plans/002-fastapi-greeting-web-service-v2-cicd-pipeline.md. All acceptance criteria met: lint/test/build/security-scan run on every push and PR; test publishes coverage report; production deploy requires manual approval.",
+          "updated_at": "2026-06-25T16:14:19.813531+00:00"
+        }
+      ]
+    }
+  ],
+  "provenance": {
+    "source": "pfactory",
+    "plan_id": "002-fastapi-greeting-web-service-v2",
+    "repo": "olafkfreund/hello-python"
+  },
+  "correlation_key": "pf-002-fastapi-greeting-web-service-v2",
+  "epic_ref": "002-fastapi-greeting-web-service-v2",
+  "execution": {
+    "complexity": "standard",
+    "model": "claude-sonnet-4-5-20250929",
+    "provider": "claude",
+    "provider_rationale": "'claude-sonnet-4-5-20250929' \u2192 claude (inferred from the model id)",
+    "phase_models": {
+      "coding": "codex",
+      "qa": "codex",
+      "qa_fixer": "claude-sonnet-4-5-20250929",
+      "planning": "gemini",
+      "test_gen": "codex"
+    },
+    "phase_thinking": {
+      "coding": "medium",
+      "qa": "low"
+    },
+    "parallel": true,
+    "workers": 4,
+    "agents": {
+      "planner": false,
+      "coder": true,
+      "qa_reviewer": true,
+      "qa_fixer": true
+    },
+    "skip_planning": true,
+    "review_tier": "auto",
+    "routing": {
+      "class": "standard",
+      "cost_estimate_usd": 0.25,
+      "cost_ceiling_usd": 3.0,
+      "policy": "operator-default",
+      "rationale": "tier=medium floor=balanced; class=standard; planning=gemini; coding=codex; qa=codex; test_gen=codex",
+      "autonomy": {
+        "verdict": "review",
+        "reason": "difficulty=medium, risk=low (medium \u21d2 async review)"
+      },
+      "difficulty": "medium",
+      "risk": "low"
+    }
+  },
+  "required_commands": [
+    "pytest",
+    "ruff",
+    "uv"
+  ],
+  "tfactory": {
+    "lanes": [
+      "unit",
+      "api",
+      "integration"
+    ],
+    "frameworks": {
+      "unit": "pytest",
+      "api": "pytest"
+    },
+    "coverage_target": 0.8,
+    "mutation_scope": [],
+    "security_scope": [],
+    "ac_to_code_map": {
+      "AC#1": [],
+      "AC#2": [],
+      "AC#3": [],
+      "AC#4": [],
+      "AC#5": [],
+      "AC#6": [],
+      "AC#7": []
+    },
+    "endpoints": {
+      "api_base_url": "http://localhost:8000"
+    }
+  },
+  "environment": {
+    "language": "python",
+    "verify_commands": [
+      "pytest -q",
+      "pytest -q tests/api",
+      "pytest -q tests/integration"
+    ],
+    "system_packages": [],
+    "provisioning": {
+      "method": "nix",
+      "ref": "flake.nix",
+      "generated": true
+    },
+    "network": "restricted",
+    "proof": {
+      "verify": [
+        "python --version"
+      ]
+    }
+  },
+  "epic_context": {
+    "constraints": [],
+    "knowledge_links": [
+      {
+        "uri": "https://backstage.freundcloud.org.uk/catalog/default/template/nixos-module",
+        "title": "NixOS Module (flake-based service module + agenix-ready)"
+      },
+      {
+        "uri": "https://backstage.freundcloud.org.uk/catalog/default/component/backstage",
+        "title": "Backstage Portal"
+      },
+      {
+        "uri": "https://backstage.freundcloud.org.uk/catalog/default/component/tfactory",
+        "title": "TFactory"
+      },
+      {
+        "uri": "https://backstage.freundcloud.org.uk/catalog/default/resource/tailscale-sidecar-pattern",
+        "title": "Tailscale sidecar pattern (factory cluster)"
+      },
+      {
+        "uri": "https://backstage.freundcloud.org.uk/catalog/default/system/ravn",
+        "title": "ravn"
+      },
+      {
+        "uri": "https://backstage.freundcloud.org.uk/catalog/default/template/python-service",
+        "title": "Python Service (FastAPI + uv + flake)"
+      },
+      {
+        "uri": "https://backstage.freundcloud.org.uk/catalog/default/resource/k3d-factory",
+        "title": "k3d Factory Cluster (p510)"
+      },
+      {
+        "uri": "https://backstage.freundcloud.org.uk/catalog/default/resource/rolehunter-db",
+        "title": "rolehunter-db"
+      },
+      {
+        "uri": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
+        "title": "Amazon RDS \u2014 High Availability & Cross-Region Replicas"
+      },
+      {
+        "uri": "https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html",
+        "title": "EKS \u2014 IRSA & secrets management"
+      },
+      {
+        "uri": "https://docs.aws.amazon.com/eks/latest/best-practices/cicd.html",
+        "title": "CI/CD for Kubernetes \u2014 image scanning & progressive delivery"
+      },
+      {
+        "uri": "https://docs.aws.amazon.com/eks/latest/best-practices/network-management.html",
+        "title": "Microservices on EKS \u2014 isolation & NetworkPolicies"
+      }
+    ],
+    "house_standards": {
+      "available": false,
+      "sources": [],
+      "error": "no backstage client configured"
+    },
+    "constitution": {
+      "available": false,
+      "source": ".factory/constitution.md",
+      "principles": [],
+      "enforceable_ids": []
+    }
+  },
+  "approval": {
+    "approved_by": "pfactory",
+    "approval_timestamp": "2026-06-25T14:37:14.885312+00:00",
+    "plan_contract_version": "2",
+    "signature": "c6a59837212b9e98e5d3d3a2204500bcbe51233a44733f471b00637682969d82"
+  },
+  "last_updated": "2026-06-25T16:14:19.813541+00:00"
+}

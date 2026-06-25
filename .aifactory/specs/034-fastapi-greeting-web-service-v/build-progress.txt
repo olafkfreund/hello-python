@@ -1,0 +1,106 @@
+## Build Progress
+
+### C1 - GET /healthz endpoint
+Status: completed
+- Created hello_python/ package with __init__.py
+- Created hello_python/web.py with FastAPI app and /healthz endpoint
+- Created pyproject.toml with fastapi[standard] and uvicorn[standard] dependencies
+- App is importable as hello_python.web:app
+  [x] C1: `GET /healthz` returns HTTP 200 with body `{"status": "ok"}`. (8abdaf8a)
+
+### C2 - GET /greet/{name} endpoint
+Status: completed
+- Added /greet/{name} route to hello_python/web.py
+- Returns HTTP 200 with {"message": "Hello, {name}!"} for any name
+- Verified: GET /greet/ada → 200 {"message": "Hello, ada!"}
+  [x] C2: `GET /greet/ada` returns HTTP 200 with body `{"message": "Hello, ada!"}`. (6a15d73)
+  [x] C2: `GET /greet/ada` returns HTTP 200 with body `{"message": "Hello, ada!"}`. (e902bb9c)
+
+### C3 - GET /greet/{name} greets any valid name correctly
+Status: completed
+- The /greet/{name} endpoint (implemented in C2) already handles any valid name
+- Uses Python f-string: return {"message": f"Hello, {name}!"}
+- Verified: GET /greet/Bob → 200 {"message": "Hello, Bob!"}
+- Verified: GET /greet/Alice → 200 {"message": "Hello, Alice!"}
+- Any path parameter name produces the correct greeting
+  [x] C3: `GET /greet/{name}` greets any valid provided name correctly.
+  [x] C3: `GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob`…
+
+`GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob` → `{"message": "Hello, Bob!"}`). (c6836808)
+
+### C4 - Name path parameter length validation
+Status: completed
+- Added `Annotated[str, Path(max_length=64)]` to the `name` parameter in `/greet/{name}`
+- Names longer than 64 characters now return HTTP 422 automatically via FastAPI/Pydantic validation
+- Names of 64 chars or fewer continue to work as before
+- Verified: 65-char name → 422, 64-char name → 200, short names → 200
+  [x] C4: The `{name}` path parameter is validated: names longer than 64 characters return HTTP 422. (8803b31)
+  [x] C4: The `{name}` path parameter is validated: names longer than 64 characters retur…
+
+The `{name}` path parameter is validated: names longer than 64 characters return HTTP 422 (input is length-bounded to prevent abuse). (89be7cdf)
+
+### C5 - Access control documentation
+Status: completed
+- Access control is explicitly out of scope for this service
+- Documented in hello_python/web.py module docstring:
+  "Access control note: all endpoints are public and read-only, hold no secrets,
+   and perform no writes — access control is explicitly out of scope for this service."
+- All endpoints (GET /healthz, GET /greet/{name}) are public and read-only
+- No authentication, no secrets stored, no write operations performed
+  [x] C5: Access control is explicitly out of scope — documented in the code.
+  [x] C5: Access control is explicitly out of scope: all endpoints are public and read-on…
+
+Access control is explicitly out of scope: all endpoints are public and read-only, hold no secrets, and perform no writes — documented in the code. (8c747c57)
+
+### C6 - App importable as hello_python.web:app, starts on port 8080
+Status: completed
+- hello_python/web.py defines `app = FastAPI(...)` at module level
+- App is importable as `hello_python.web:app` (verified with uv run python)
+- main() function runs `uvicorn.run("hello_python.web:app", host="0.0.0.0", port=8080, reload=False)`
+- pyproject.toml exposes `hello-python = "hello_python.web:main"` as a CLI entry point
+- No changes needed — C1-C5 already satisfied this requirement
+  [x] C6: The app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080.
+  [x] C6: The app object is importable as `hello_python.web:app` and starts under uvicorn…
+
+The app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080. (b5ac9424)
+
+### C7 - Dockerfile builds the service and runs it on port 8080
+Status: completed
+- Created Dockerfile using python:3.11-slim base image with uv for dependency management
+- Two-layer install: deps first (for layer caching), then project source code
+- EXPOSE 8080 declared; CMD uses hello-python entry point (uvicorn on 0.0.0.0:8080)
+- Added .dockerignore to exclude .venv, .git, tests, and build artifacts
+  [x] C7: A `Dockerfile` exists that builds the service and runs it on port 8080. (9eb676a)
+  [x] C7: A `Dockerfile` exists that builds the service and runs it on port 8080. (2fad2f14)
+
+### TEST - Testing for FastAPI greeting web service v2
+Status: completed
+- Added pytest>=8.0, pytest-cov>=5.0, httpx>=0.28 as dev dependencies via [dependency-groups] in pyproject.toml
+- Created three test lanes:
+  * tests/unit/test_greeting.py  – 6 tests: greeting format, boundary length, 422 rejection
+  * tests/api/test_endpoints.py  – 13 tests: full coverage of AC#1–AC#6 via FastAPI TestClient
+  * tests/integration/test_startup.py – 6 tests: main() config (AC#6), Dockerfile existence/EXPOSE (AC#7)
+- Shared fixture in tests/conftest.py (session-scoped TestClient)
+- All 25 tests pass: `uv run pytest` → 25 passed
+  [x] TEST: Unit, integration, and api lanes scaffolded and all passing (25 tests).
+  [x] TEST: Set up testing for FastAPI greeting web service v2
+
+Implement the testing strategy specified in `docs/plans/002-fastapi-greeting-web-service-v2-testing-strategy.md`.
+
+Lanes: unit / integration / e2e. Each acceptance criterion is mapped to a test approach in the spec. Hand test generation over to TFactory. (d1bd0786)
+
+### CICD - CI/CD pipeline for FastAPI greeting web service v2
+Status: completed
+- Created docs/plans/002-fastapi-greeting-web-service-v2-cicd-pipeline.md (plan document)
+- Created .github/workflows/ci.yml with 5 pipeline stages:
+  * lint: ruff check + ruff format --check (runs on every push & PR)
+  * test: pytest --cov with coverage.xml + junit.xml artefacts published
+  * build: docker build, exports image tarball for reuse by security-scan
+  * security-scan: pip-audit (Python deps) + Trivy (Docker image HIGH/CRITICAL CVEs)
+  * deploy-staging: automatic on push to main/master (gated on green build)
+  * deploy-production: manual approval required (GitHub environment protection)
+- Pipeline uses uv for fast, reproducible Python dependency management
+- Deploy jobs are skipped on pull_request events (push-only)
+  [x] CICD: Lint, test, build, and security-scan stages run on every push and PR.
+  [x] CICD: Test stage runs full suite and publishes coverage report.
+  [x] CICD: Deploy stages gated on green build; production requires manual approval.

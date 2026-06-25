@@ -1,0 +1,23 @@
+{
+  "model": "claude-sonnet-4-5-20250929",
+  "phaseModels": {
+    "coding": "sonnet",
+    "qa": "sonnet",
+    "qa_fixer": "sonnet",
+    "planning": "sonnet",
+    "test_gen": "sonnet"
+  },
+  "phaseThinking": {
+    "planning": "high",
+    "coding": "medium",
+    "qa": "high",
+    "qa_fixer": "low",
+    "test_gen": "medium"
+  },
+  "parallel": true,
+  "workers": 4,
+  "complexity": "standard",
+  "reviewTier": "auto",
+  "skipPlanning": true,
+  "isAutoProfile": true
+}
