@@ -1,35 +1,35 @@
 {
   "version": 1,
-  "turns": 5,
-  "totalInputTokens": 2752934,
-  "outputTokens": 23757,
-  "totalTokens": 2776691,
-  "totalCostUsd": 1.731632,
+  "turns": 6,
+  "totalInputTokens": 3364333,
+  "outputTokens": 29577,
+  "totalTokens": 3393910,
+  "totalCostUsd": 2.124391,
   "categories": {
     "system_instructions": {
-      "tokens": 2751443,
-      "costUsd": 1.715595
+      "tokens": 3362822,
+      "costUsd": 2.104638
     },
     "user_messages": {
-      "tokens": 86,
-      "costUsd": 6.3e-05
+      "tokens": 87,
+      "costUsd": 6.4e-05
     },
     "coordination_context": {
       "tokens": 0,
       "costUsd": 0.0
     },
     "tool_outputs": {
-      "tokens": 1405,
-      "costUsd": 0.001003
+      "tokens": 1424,
+      "costUsd": 0.001015
     },
     "thinking_and_output": {
-      "tokens": 23757,
-      "costUsd": 0.014972
+      "tokens": 29577,
+      "costUsd": 0.018675
     }
   },
   "model": "claude-sonnet-4-6",
   "maxTokens": 200000,
-  "updatedAt": "2026-06-25T16:03:11.146400+00:00",
+  "updatedAt": "2026-06-25T16:05:13.272757+00:00",
   "workers": {
     "C1": {
       "worker_id": "C1",
@@ -89,6 +89,18 @@
       "output_tokens": 5119,
       "total_tokens": 545151,
       "cost_usd": 0.357693,
+      "duration_ms": 0
+    },
+    "C6": {
+      "worker_id": "C6",
+      "phase": "coding",
+      "subtask_id": "C6",
+      "provider": "claude",
+      "model": "claude-sonnet-4-6",
+      "input_tokens": 611399,
+      "output_tokens": 5820,
+      "total_tokens": 617219,
+      "cost_usd": 0.392759,
       "duration_ms": 0
     }
   }

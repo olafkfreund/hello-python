@@ -48,3 +48,15 @@ Status: completed
 - All endpoints (GET /healthz, GET /greet/{name}) are public and read-only
 - No authentication, no secrets stored, no write operations performed
   [x] C5: Access control is explicitly out of scope — documented in the code.
+  [x] C5: Access control is explicitly out of scope: all endpoints are public and read-on…
+
+Access control is explicitly out of scope: all endpoints are public and read-only, hold no secrets, and perform no writes — documented in the code. (8c747c57)
+
+### C6 - App importable as hello_python.web:app, starts on port 8080
+Status: completed
+- hello_python/web.py defines `app = FastAPI(...)` at module level
+- App is importable as `hello_python.web:app` (verified with uv run python)
+- main() function runs `uvicorn.run("hello_python.web:app", host="0.0.0.0", port=8080, reload=False)`
+- pyproject.toml exposes `hello-python = "hello_python.web:main"` as a CLI entry point
+- No changes needed — C1-C5 already satisfied this requirement
+  [x] C6: The app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080.

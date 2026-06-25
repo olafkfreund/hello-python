@@ -117,7 +117,7 @@
         {
           "id": "C6",
           "description": "The app object is importable as `hello_python.web:app` and starts under uvicorn\u2026\n\nThe app object is importable as `hello_python.web:app` and starts under uvicorn on port 8080.",
-          "status": "pending",
+          "status": "completed",
           "service": null,
           "depends_on": [],
           "files_to_create": [],
