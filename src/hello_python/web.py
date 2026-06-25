@@ -15,7 +15,10 @@ app = FastAPI(title="hello-python", version="0.1.0")
 
 @app.get("/healthz")
 async def healthz() -> dict[str, str]:
-    """Health-check endpoint — always returns HTTP 200."""
+    """Health-check endpoint — always returns HTTP 200.
+
+    Access control: public, read-only, no secrets, no writes.
+    """
     return {"status": "ok"}
 
 
