@@ -17,6 +17,15 @@ async def healthz() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/greet/{name}")
+async def greet(name: str) -> dict[str, str]:
+    """Return a personalised greeting for *name*.
+
+    Access control: public, read-only, no secrets, no writes.
+    """
+    return {"message": f"Hello, {name}!"}
+
+
 def main() -> None:
     """Entry-point for uvicorn via the CLI script."""
     import uvicorn
