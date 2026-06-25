@@ -10,3 +10,4 @@ Created:
 
 The /healthz handler returns `{"status": "ok"}` with HTTP 200.
 App is importable as `hello_python.web:app`.
+  [x] C1: `GET /healthz` returns HTTP 200 with body `{"status": "ok"}`. (6de73415)

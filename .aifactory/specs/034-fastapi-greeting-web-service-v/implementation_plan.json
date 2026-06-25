@@ -45,7 +45,7 @@
         {
           "id": "C2",
           "description": "`GET /greet/ada` returns HTTP 200 with body `{\"message\": \"Hello, ada!\"}`.",
-          "status": "pending",
+          "status": "completed",
           "service": null,
           "depends_on": [],
           "files_to_create": [],
