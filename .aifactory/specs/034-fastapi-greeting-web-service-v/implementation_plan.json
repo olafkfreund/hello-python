@@ -63,7 +63,7 @@
         {
           "id": "C3",
           "description": "`GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob`\u2026\n\n`GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob` \u2192 `{\"message\": \"Hello, Bob!\"}`).",
-          "status": "pending",
+          "status": "completed",
           "service": null,
           "depends_on": [],
           "files_to_create": [],
