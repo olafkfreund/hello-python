@@ -14,3 +14,13 @@ Status: completed
 - Returns HTTP 200 with {"message": "Hello, {name}!"} for any name
 - Verified: GET /greet/ada → 200 {"message": "Hello, ada!"}
   [x] C2: `GET /greet/ada` returns HTTP 200 with body `{"message": "Hello, ada!"}`. (6a15d73)
+  [x] C2: `GET /greet/ada` returns HTTP 200 with body `{"message": "Hello, ada!"}`. (e902bb9c)
+
+### C3 - GET /greet/{name} greets any valid name correctly
+Status: completed
+- The /greet/{name} endpoint (implemented in C2) already handles any valid name
+- Uses Python f-string: return {"message": f"Hello, {name}!"}
+- Verified: GET /greet/Bob → 200 {"message": "Hello, Bob!"}
+- Verified: GET /greet/Alice → 200 {"message": "Hello, Alice!"}
+- Any path parameter name produces the correct greeting
+  [x] C3: `GET /greet/{name}` greets any valid provided name correctly.
