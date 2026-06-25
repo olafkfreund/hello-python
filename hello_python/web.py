@@ -5,8 +5,10 @@ Access control note: all endpoints are public and read-only, hold no secrets,
 and perform no writes — access control is explicitly out of scope for this service.
 """
 
+from typing import Annotated
+
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Path
 
 app = FastAPI(title="hello-python", version="0.1.0")
 
@@ -18,8 +20,14 @@ def healthz() -> dict[str, str]:
 
 
 @app.get("/greet/{name}")
-def greet(name: str) -> dict[str, str]:
-    """Greet endpoint. Returns HTTP 200 with a personalised greeting message."""
+def greet(
+    name: Annotated[str, Path(max_length=64, description="Name to greet (max 64 characters)")],
+) -> dict[str, str]:
+    """Greet endpoint. Returns HTTP 200 with a personalised greeting message.
+
+    The name parameter is length-bounded to 64 characters to prevent abuse.
+    Names exceeding this limit return HTTP 422.
+    """
     return {"message": f"Hello, {name}!"}
 
 
