@@ -193,7 +193,7 @@
         {
           "id": "CICD",
           "description": "Set up CI/CD for FastAPI greeting web service v2\n\nImplement the CI/CD pipeline specified in `docs/plans/002-fastapi-greeting-web-service-v2-cicd-pipeline.md`.\n\nStages: lint \u2192 test \u2192 build \u2192 security scan \u2192 deploy.",
-          "status": "pending",
+          "status": "completed",
           "service": "cicd",
           "depends_on": [
             "C1",
@@ -216,7 +216,9 @@
           "verification": {
             "type": "command",
             "run": "ruff check . && pytest"
-          }
+          },
+          "notes": "Created .github/workflows/ci.yml with 5 stages: lint (ruff), test (pytest --cov, publishes coverage.xml + junit.xml artefacts), build (docker build + image tarball), security-scan (pip-audit + Trivy HIGH/CRITICAL), deploy-staging (automatic on push), deploy-production (manual approval via GitHub environment protection). Also created docs/plans/002-fastapi-greeting-web-service-v2-cicd-pipeline.md. All acceptance criteria met: lint/test/build/security-scan run on every push and PR; test publishes coverage report; production deploy requires manual approval.",
+          "updated_at": "2026-06-25T16:14:19.813531+00:00"
         }
       ]
     }
@@ -388,5 +390,6 @@
     "approval_timestamp": "2026-06-25T14:37:14.885312+00:00",
     "plan_contract_version": "2",
     "signature": "c6a59837212b9e98e5d3d3a2204500bcbe51233a44733f471b00637682969d82"
-  }
+  },
+  "last_updated": "2026-06-25T16:14:19.813541+00:00"
 }

@@ -83,3 +83,24 @@ Status: completed
 - Shared fixture in tests/conftest.py (session-scoped TestClient)
 - All 25 tests pass: `uv run pytest` → 25 passed
   [x] TEST: Unit, integration, and api lanes scaffolded and all passing (25 tests).
+  [x] TEST: Set up testing for FastAPI greeting web service v2
+
+Implement the testing strategy specified in `docs/plans/002-fastapi-greeting-web-service-v2-testing-strategy.md`.
+
+Lanes: unit / integration / e2e. Each acceptance criterion is mapped to a test approach in the spec. Hand test generation over to TFactory. (d1bd0786)
+
+### CICD - CI/CD pipeline for FastAPI greeting web service v2
+Status: completed
+- Created docs/plans/002-fastapi-greeting-web-service-v2-cicd-pipeline.md (plan document)
+- Created .github/workflows/ci.yml with 5 pipeline stages:
+  * lint: ruff check + ruff format --check (runs on every push & PR)
+  * test: pytest --cov with coverage.xml + junit.xml artefacts published
+  * build: docker build, exports image tarball for reuse by security-scan
+  * security-scan: pip-audit (Python deps) + Trivy (Docker image HIGH/CRITICAL CVEs)
+  * deploy-staging: automatic on push to main/master (gated on green build)
+  * deploy-production: manual approval required (GitHub environment protection)
+- Pipeline uses uv for fast, reproducible Python dependency management
+- Deploy jobs are skipped on pull_request events (push-only)
+  [x] CICD: Lint, test, build, and security-scan stages run on every push and PR.
+  [x] CICD: Test stage runs full suite and publishes coverage report.
+  [x] CICD: Deploy stages gated on green build; production requires manual approval.
