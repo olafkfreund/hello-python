@@ -9,8 +9,8 @@ These tests verify structural / static properties of the application:
 
 import importlib
 import inspect
-import os
 import pathlib
+from unittest.mock import patch
 
 import fastapi
 import pytest
@@ -94,4 +94,21 @@ class TestDockerfile:
     def test_dockerfile_runs_on_8080(self, dockerfile_path: pathlib.Path) -> None:
         """Dockerfile CMD/ENTRYPOINT must bind to port 8080."""
         content = dockerfile_path.read_text()
-        assert "8080" in content, "Dockerfile must reference port 8080 in CMD/ENTRYPOINT"
+        assert "8080" in content, (
+            "Dockerfile must reference port 8080 in CMD/ENTRYPOINT"
+        )
+
+
+class TestMain:
+    """AC#6 — main() starts uvicorn on port 8080."""
+
+    def test_main_calls_uvicorn_run(self) -> None:
+        """main() must invoke uvicorn.run with the correct arguments."""
+        with patch("uvicorn.run") as mock_run:
+            web_module.main()
+        mock_run.assert_called_once_with(
+            "hello_python.web:app",
+            host="0.0.0.0",
+            port=8080,
+            reload=False,
+        )

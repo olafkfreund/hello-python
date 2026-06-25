@@ -9,11 +9,7 @@ the entire ASGI lifecycle (startup / shutdown) is exercised, verifying that:
 - Content-type negotiation behaves correctly
 """
 
-import pytest
-import httpx
 from fastapi.testclient import TestClient
-
-from hello_python.web import app
 
 
 class TestFullStack:
