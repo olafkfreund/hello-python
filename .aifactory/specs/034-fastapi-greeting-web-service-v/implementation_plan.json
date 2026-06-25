@@ -81,7 +81,7 @@
         {
           "id": "C4",
           "description": "The `{name}` path parameter is validated: names longer than 64 characters retur\u2026\n\nThe `{name}` path parameter is validated: names longer than 64 characters return HTTP 422 (input is length-bounded to prevent abuse).",
-          "status": "pending",
+          "status": "completed",
           "service": null,
           "depends_on": [],
           "files_to_create": [],

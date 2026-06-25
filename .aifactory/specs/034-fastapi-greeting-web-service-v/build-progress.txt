@@ -24,3 +24,14 @@ Status: completed
 - Verified: GET /greet/Alice → 200 {"message": "Hello, Alice!"}
 - Any path parameter name produces the correct greeting
   [x] C3: `GET /greet/{name}` greets any valid provided name correctly.
+  [x] C3: `GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob`…
+
+`GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob` → `{"message": "Hello, Bob!"}`). (c6836808)
+
+### C4 - Name path parameter length validation
+Status: completed
+- Added `Annotated[str, Path(max_length=64)]` to the `name` parameter in `/greet/{name}`
+- Names longer than 64 characters now return HTTP 422 automatically via FastAPI/Pydantic validation
+- Names of 64 chars or fewer continue to work as before
+- Verified: 65-char name → 422, 64-char name → 200, short names → 200
+  [x] C4: The `{name}` path parameter is validated: names longer than 64 characters return HTTP 422. (8803b31)
