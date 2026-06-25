@@ -71,3 +71,15 @@ Status: completed
 - EXPOSE 8080 declared; CMD uses hello-python entry point (uvicorn on 0.0.0.0:8080)
 - Added .dockerignore to exclude .venv, .git, tests, and build artifacts
   [x] C7: A `Dockerfile` exists that builds the service and runs it on port 8080. (9eb676a)
+  [x] C7: A `Dockerfile` exists that builds the service and runs it on port 8080. (2fad2f14)
+
+### TEST - Testing for FastAPI greeting web service v2
+Status: completed
+- Added pytest>=8.0, pytest-cov>=5.0, httpx>=0.28 as dev dependencies via [dependency-groups] in pyproject.toml
+- Created three test lanes:
+  * tests/unit/test_greeting.py  – 6 tests: greeting format, boundary length, 422 rejection
+  * tests/api/test_endpoints.py  – 13 tests: full coverage of AC#1–AC#6 via FastAPI TestClient
+  * tests/integration/test_startup.py – 6 tests: main() config (AC#6), Dockerfile existence/EXPOSE (AC#7)
+- Shared fixture in tests/conftest.py (session-scoped TestClient)
+- All 25 tests pass: `uv run pytest` → 25 passed
+  [x] TEST: Unit, integration, and api lanes scaffolded and all passing (25 tests).

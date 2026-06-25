@@ -164,7 +164,7 @@
         {
           "id": "TEST",
           "description": "Set up testing for FastAPI greeting web service v2\n\nImplement the testing strategy specified in `docs/plans/002-fastapi-greeting-web-service-v2-testing-strategy.md`.\n\nLanes: unit / integration / e2e. Each acceptance criterion is mapped to a test approach in the spec. Hand test generation over to TFactory.",
-          "status": "pending",
+          "status": "completed",
           "service": "testing",
           "depends_on": [
             "C1",
