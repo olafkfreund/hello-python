@@ -16,3 +16,7 @@ App is importable as `hello_python.web:app`.
   [x] C3: `GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob`…
 
 `GET /greet/{name}` greets any valid provided name correctly (e.g. `/greet/Bob` → `{"message": "Hello, Bob!"}`). (fb653c78)
+  [x] C4: The `{name}` path parameter is validated: names longer than 64 characters retur…
+
+The `{name}` path parameter is validated: names longer than 64 characters return HTTP 422 (input is length-bounded to prevent abuse). (455388fb)
+  [x] C5: Access control is explicitly out of scope: all endpoints are public and read-only, hold no secrets, and perform no writes — documented in the code. (9f3e06c)
