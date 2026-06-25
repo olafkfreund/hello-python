@@ -17,6 +17,12 @@ def healthz() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/greet/{name}")
+def greet(name: str) -> dict[str, str]:
+    """Greet endpoint. Returns HTTP 200 with a personalised greeting message."""
+    return {"message": f"Hello, {name}!"}
+
+
 def main() -> None:
     uvicorn.run("hello_python.web:app", host="0.0.0.0", port=8080, reload=False)
 
