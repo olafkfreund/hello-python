@@ -1,0 +1,52 @@
+## Build Progress - is_odd Helper (Task 037)
+
+### C1 - Add is_odd helper function
+Status: completed
+- Created hello_python/helpers.py module
+- Implemented is_odd(n: int) -> bool function
+- Basic implementation: return n % 2 != 0
+- Added comprehensive docstring with AC references
+  [x] C1: is_odd(3) returns True and is_odd(4) returns False.
+
+### C2 - [Skipped or integrated into other subtasks]
+Status: integrated
+
+### C3 - Add tests for zero and negative numbers
+Status: completed
+- Added parametrized tests for zero: is_odd(0) == False
+- Added parametrized tests for negative numbers
+- Negative odd numbers: -1, -3, -99 all correctly return True
+- Negative even numbers: -2, -100 all correctly return False
+  [x] C3: Zero and negative numbers handled correctly.
+
+### C4 - Add type checking
+Status: completed
+- Enhanced is_odd() to validate input is an integer
+- Added special case for booleans (which are technically int in Python)
+- Raises TypeError with descriptive message for non-integer inputs
+- Type validation covers: strings, floats, None, lists, dicts, tuples, booleans
+  [x] C4: TypeError raised for non-integer inputs.
+
+### C5 - Final Verification and Integration Testing
+Status: completed
+- Verified implementation follows all project code patterns
+- Confirmed module docstrings, function docstrings, and type hints are correct
+- Verified error handling with proper exception messages
+- Confirmed proper module exports from __all__
+- Validated comprehensive test coverage across all acceptance criteria:
+  * AC#1: Basic odd/even detection (3→True, 4→False, 1, 2, 99, 100)
+  * AC#2: Zero is even (0→False)
+  * AC#3: Negative numbers (±1, ±3, ±99, ±100)
+  * AC#4: Type checking for invalid inputs (7 type variants tested)
+- Total tests: 20 parametrized test cases covering all requirements
+- Code quality: No console.log/print statements, clean implementation
+- Git history: All previous subtasks (C1, C3, C4) successfully merged
+  [x] C5: is_odd helper implementation complete and verified.
+
+### Summary
+The is_odd helper function is fully implemented, tested, and verified:
+- Implementation: helpers.py with proper documentation
+- Exports: Available as `from hello_python import is_odd`
+- Tests: Comprehensive unit tests in tests/unit/test_is_odd.py
+- Coverage: All acceptance criteria AC#1-AC#4 covered
+- Quality: Follows all project conventions and patterns
