@@ -1,7 +1,11 @@
 """Utility functions for the hello_python package."""
 
+from typing import TypeVar
 
-def clamp(value, min_value, max_value):
+T = TypeVar("T", int, float)
+
+
+def clamp(value: T, min_value: T, max_value: T) -> T:
     """Constrain a value to a given range.
 
     Args:
