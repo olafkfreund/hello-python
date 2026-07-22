@@ -18,4 +18,6 @@ def is_odd(n: int) -> bool:
     Raises:
         TypeError: If n is not an integer.
     """
+    if not isinstance(n, int) or isinstance(n, bool):
+        raise TypeError(f"Expected an integer, got {type(n).__name__}")
     return n % 2 != 0
