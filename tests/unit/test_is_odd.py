@@ -22,3 +22,19 @@ from hello_python import is_odd
 def test_is_odd_basic(n: int, expected: bool) -> None:
     """Basic is_odd test for positive integers (AC#1)."""
     assert is_odd(n) == expected
+
+
+@pytest.mark.parametrize(
+    "n,expected",
+    [
+        (0, False),  # AC#2 – zero is even
+        (-1, True),  # AC#3 – negative odd
+        (-2, False),  # AC#3 – negative even
+        (-3, True),  # AC#3 – canonical negative odd
+        (-99, True),  # AC#3 – larger negative odd
+        (-100, False),  # AC#3 – larger negative even
+    ],
+)
+def test_is_odd_zero_and_negative(n: int, expected: bool) -> None:
+    """Test is_odd with zero and negative integers (AC#2, AC#3)."""
+    assert is_odd(n) == expected
