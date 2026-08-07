@@ -31,6 +31,27 @@ def test_health_returns_status_ok(client: TestClient) -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_health_unaffected_by_healthz_dependency_failure(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """GET /health (liveness) must stay 200 {"status": "ok"} regardless of the
+    /healthz readiness logic.
+
+    Even when a dependency is configured at an unreachable address — the exact
+    condition that makes /healthz return 503 — the liveness endpoint must be
+    completely unaffected and keep returning 200 {"status": "ok"}. This proves
+    the new readiness logic did not alter the existing /health contract.
+    """
+    monkeypatch.setenv("HEALTHZ_DEPENDENCIES", "db=127.0.0.1:1")
+
+    # Sanity check: /healthz genuinely fails under this configuration.
+    assert client.get("/healthz").status_code == 503
+
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
 def test_healthz_returns_200(client: TestClient) -> None:
     """GET /healthz (readiness) must return HTTP 200 when all deps reachable."""
     response = client.get("/healthz")
