@@ -15,20 +15,123 @@ import pytest
 from fastapi.testclient import TestClient
 
 # ---------------------------------------------------------------------------
-# AC#1 – health check
+# AC#1 – health checks: /health liveness + /healthz readiness
 # ---------------------------------------------------------------------------
 
 
+def test_health_returns_200(client: TestClient) -> None:
+    """GET /health (liveness) must return HTTP 200 (AC#1)."""
+    response = client.get("/health")
+    assert response.status_code == 200
+
+
+def test_health_returns_status_ok(client: TestClient) -> None:
+    """GET /health body must be {"status": "ok"} (AC#1)."""
+    response = client.get("/health")
+    assert response.json() == {"status": "ok"}
+
+
+def test_health_unaffected_by_healthz_dependency_failure(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """GET /health (liveness) must stay 200 {"status": "ok"} regardless of the
+    /healthz readiness logic.
+
+    Even when a dependency is configured at an unreachable address — the exact
+    condition that makes /healthz return 503 — the liveness endpoint must be
+    completely unaffected and keep returning 200 {"status": "ok"}. This proves
+    the new readiness logic did not alter the existing /health contract.
+    """
+    monkeypatch.setenv("HEALTHZ_DEPENDENCIES", "db=127.0.0.1:1")
+
+    # Sanity check: /healthz genuinely fails under this configuration.
+    assert client.get("/healthz").status_code == 503
+
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
 def test_healthz_returns_200(client: TestClient) -> None:
-    """GET /healthz must return HTTP 200 (AC#1)."""
+    """GET /healthz (readiness) must return HTTP 200 when all deps reachable."""
     response = client.get("/healthz")
     assert response.status_code == 200
 
 
-def test_healthz_returns_status_ok(client: TestClient) -> None:
-    """GET /healthz body must be {"status": "ok"} (AC#1)."""
+def test_healthz_returns_status_ready(client: TestClient) -> None:
+    """GET /healthz body must be {"status": "ready"} when all deps reachable."""
     response = client.get("/healthz")
-    assert response.json() == {"status": "ok"}
+    assert response.json() == {"status": "ready"}
+
+
+def test_healthz_returns_503_when_dependency_unreachable(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """GET /healthz must return HTTP 503 when a configured dependency is
+    unreachable.
+
+    This is the key test proving the readiness check can actually fail rather
+    than passing vacuously: pointing a dependency at an address nothing is
+    listening on (127.0.0.1:1) forces the round-trip check to fail, and the
+    endpoint must report 503 and name the failing dependency ("db").
+    """
+    monkeypatch.setenv("HEALTHZ_DEPENDENCIES", "db=127.0.0.1:1")
+
+    response = client.get("/healthz")
+
+    assert response.status_code == 503
+    assert "db" in response.json()["dependencies"]
+
+
+def test_healthz_503_body_names_dependency_without_leaking_details(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The 503 body must name the failing dependency but leak no connection
+    details.
+
+    Point a dependency at an unreachable target whose host, port and
+    credentials are distinctive strings, then assert the response body contains
+    the dependency name ("db") but none of the forbidden fields: hostnames,
+    ports, connection strings, credentials, versions, or driver error text.
+    """
+    host = "secret-db-host.internal.example"
+    port = "54329"
+    user = "admin"
+    password = "s3cr3t-p4ssw0rd"
+    monkeypatch.setenv(
+        "HEALTHZ_DEPENDENCIES",
+        f"db=postgresql://{user}:{password}@{host}:{port}",
+    )
+
+    response = client.get("/healthz")
+
+    assert response.status_code == 503
+    # The failing dependency is named so callers know which one is not ready.
+    assert "db" in response.json()["dependencies"]
+
+    # No connection details, credentials, versions, or driver error text may
+    # appear anywhere in the (unauthenticated) response body.
+    body = response.text
+    forbidden = [
+        host,
+        "secret-db-host",
+        "internal",
+        "example",
+        port,
+        user,
+        password,
+        "postgresql",
+        "Connection refused",
+        "ConnectionRefusedError",
+        "OSError",
+        "socket",
+        "timed out",
+        "getaddrinfo",
+        "Errno",
+        "Traceback",
+    ]
+    for token in forbidden:
+        assert token not in body, f"forbidden token leaked in body: {token!r}"
 
 
 # ---------------------------------------------------------------------------
