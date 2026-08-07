@@ -62,6 +62,57 @@ def test_healthz_returns_503_when_dependency_unreachable(
     assert "db" in response.json()["dependencies"]
 
 
+def test_healthz_503_body_names_dependency_without_leaking_details(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The 503 body must name the failing dependency but leak no connection
+    details.
+
+    Point a dependency at an unreachable target whose host, port and
+    credentials are distinctive strings, then assert the response body contains
+    the dependency name ("db") but none of the forbidden fields: hostnames,
+    ports, connection strings, credentials, versions, or driver error text.
+    """
+    host = "secret-db-host.internal.example"
+    port = "54329"
+    user = "admin"
+    password = "s3cr3t-p4ssw0rd"
+    monkeypatch.setenv(
+        "HEALTHZ_DEPENDENCIES",
+        f"db=postgresql://{user}:{password}@{host}:{port}",
+    )
+
+    response = client.get("/healthz")
+
+    assert response.status_code == 503
+    # The failing dependency is named so callers know which one is not ready.
+    assert "db" in response.json()["dependencies"]
+
+    # No connection details, credentials, versions, or driver error text may
+    # appear anywhere in the (unauthenticated) response body.
+    body = response.text
+    forbidden = [
+        host,
+        "secret-db-host",
+        "internal",
+        "example",
+        port,
+        user,
+        password,
+        "postgresql",
+        "Connection refused",
+        "ConnectionRefusedError",
+        "OSError",
+        "socket",
+        "timed out",
+        "getaddrinfo",
+        "Errno",
+        "Traceback",
+    ]
+    for token in forbidden:
+        assert token not in body, f"forbidden token leaked in body: {token!r}"
+
+
 # ---------------------------------------------------------------------------
 # AC#2 – greet the canonical name "ada"
 # ---------------------------------------------------------------------------
