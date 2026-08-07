@@ -15,20 +15,32 @@ import pytest
 from fastapi.testclient import TestClient
 
 # ---------------------------------------------------------------------------
-# AC#1 – health check
+# AC#1 – health checks: /health liveness + /healthz readiness
 # ---------------------------------------------------------------------------
 
 
+def test_health_returns_200(client: TestClient) -> None:
+    """GET /health (liveness) must return HTTP 200 (AC#1)."""
+    response = client.get("/health")
+    assert response.status_code == 200
+
+
+def test_health_returns_status_ok(client: TestClient) -> None:
+    """GET /health body must be {"status": "ok"} (AC#1)."""
+    response = client.get("/health")
+    assert response.json() == {"status": "ok"}
+
+
 def test_healthz_returns_200(client: TestClient) -> None:
-    """GET /healthz must return HTTP 200 (AC#1)."""
+    """GET /healthz (readiness) must return HTTP 200 when all deps reachable."""
     response = client.get("/healthz")
     assert response.status_code == 200
 
 
-def test_healthz_returns_status_ok(client: TestClient) -> None:
-    """GET /healthz body must be {"status": "ok"} (AC#1)."""
+def test_healthz_returns_status_ready(client: TestClient) -> None:
+    """GET /healthz body must be {"status": "ready"} when all deps reachable."""
     response = client.get("/healthz")
-    assert response.json() == {"status": "ok"}
+    assert response.json() == {"status": "ready"}
 
 
 # ---------------------------------------------------------------------------
