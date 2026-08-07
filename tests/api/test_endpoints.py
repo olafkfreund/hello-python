@@ -43,6 +43,25 @@ def test_healthz_returns_status_ready(client: TestClient) -> None:
     assert response.json() == {"status": "ready"}
 
 
+def test_healthz_returns_503_when_dependency_unreachable(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """GET /healthz must return HTTP 503 when a configured dependency is
+    unreachable.
+
+    This is the key test proving the readiness check can actually fail rather
+    than passing vacuously: pointing a dependency at an address nothing is
+    listening on (127.0.0.1:1) forces the round-trip check to fail, and the
+    endpoint must report 503 and name the failing dependency ("db").
+    """
+    monkeypatch.setenv("HEALTHZ_DEPENDENCIES", "db=127.0.0.1:1")
+
+    response = client.get("/healthz")
+
+    assert response.status_code == 503
+    assert "db" in response.json()["dependencies"]
+
+
 # ---------------------------------------------------------------------------
 # AC#2 – greet the canonical name "ada"
 # ---------------------------------------------------------------------------
