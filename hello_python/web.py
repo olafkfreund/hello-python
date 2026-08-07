@@ -73,6 +73,24 @@ def _check_dependency(host: str, port: int) -> None:
         pass
 
 
+def _probe_dependency(host: str, port: int) -> bool:
+    """Probe a dependency and return whether it is reachable, sanitizing errors.
+
+    This is the sanitization boundary for the readiness probe: it wraps the
+    round-trip check so that *any* error it raises — DNS failures, refused or
+    timed-out connections, TLS/driver errors — is caught here and collapsed to a
+    single ``False``. No exception object, message, ``host``, ``port``, or driver
+    error text ever escapes this function, so callers can only observe a boolean
+    and never leak connection details, credentials, or versions into the
+    (unauthenticated) response body.
+    """
+    try:
+        _check_dependency(host, port)
+    except Exception:  # noqa: BLE001 - sanitize any driver/OS error text
+        return False
+    return True
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     """Liveness probe. Returns HTTP 200 once the process is running.
@@ -97,9 +115,7 @@ def healthz(response: Response) -> dict[str, object]:
     """
     unavailable: list[str] = []
     for name, host, port in _configured_dependencies():
-        try:
-            _check_dependency(host, port)
-        except Exception:  # noqa: BLE001 - sanitize any driver/OS error text
+        if not _probe_dependency(host, port):
             unavailable.append(name)
 
     if unavailable:
