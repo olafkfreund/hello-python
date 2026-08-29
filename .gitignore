@@ -15,3 +15,6 @@ dist/
 build/
 node_modules/
 .DS_Store
+
+# Build / test artifacts (auto-added by AIFactory so parallel waves merge cleanly)
+.aifactory/
