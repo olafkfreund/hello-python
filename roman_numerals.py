@@ -97,7 +97,9 @@ def from_roman(s: str) -> int:
 
     invalid = {ch for ch in s if ch not in _ROMAN_VALUES}
     if invalid:
-        raise ValueError(f"s contains invalid Roman numeral characters: {sorted(invalid)}")
+        raise ValueError(
+            f"s contains invalid Roman numeral characters: {sorted(invalid)}"
+        )
 
     total = 0
     prev_value = 0
